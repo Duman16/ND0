@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+﻿import React, { Component } from 'react';
 import TaskAddForm from './components/TaskAddForm';
 import TodoList from './components/TodoList';
+import './styles/styles.css';  // РЈР±РµРґРёС‚РµСЃСЊ, С‡С‚Рѕ РїСѓС‚СЊ РїСЂР°РІРёР»СЊРЅС‹Р№
 
 class App extends Component {
   state = {
@@ -45,12 +46,11 @@ class App extends Component {
   // Method to filter tasks
   filterTasks = (tasks, filter) => {
     switch (filter) {
-      case 'all':
-        return tasks;
       case 'active':
         return tasks.filter((task) => !task.done);
       case 'done':
         return tasks.filter((task) => task.done);
+      case 'all':
       default:
         return tasks;
     }
@@ -64,6 +64,16 @@ class App extends Component {
     );
   };
 
+  // Handle search input change
+  onSearchChange = (e) => {
+    this.setState({ term: e.target.value });
+  };
+
+  // Handle filter change
+  onFilterChange = (filter) => {
+    this.setState({ filter });
+  };
+
   render() {
     const { tasks, term, filter } = this.state;
 
@@ -74,14 +84,40 @@ class App extends Component {
     );
 
     return (
-      <div>
-        <h1>ToDo List</h1>
-        <TaskAddForm onTaskAdded={this.addTask} />
-        <TodoList
-          tasks={visibleTasks}
-          onTaskDeleted={this.deleteTask}
-          onTaskEdited={this.editTask}
-        />
+      <div className="todo-app">
+        <h1 className="todo-app__header">ToDo List</h1>
+
+        {/* Search input */}
+        <div className="todo-app__search">
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Search tasks"
+            value={term}
+            onChange={this.onSearchChange}
+          />
+        </div>
+
+        {/* Filter buttons */}
+        <div className="filter-buttons">
+          <button onClick={() => this.onFilterChange('all')}>All</button>
+          <button onClick={() => this.onFilterChange('active')}>Active</button>
+          <button onClick={() => this.onFilterChange('done')}>Done</button>
+        </div>
+
+        {/* Add Task Form */}
+        <div className="todo-app__add-form">
+          <TaskAddForm onTaskAdded={this.addTask} />
+        </div>
+
+        {/* Task List */}
+        <div className="todo-app__task-list">
+          <TodoList
+            tasks={visibleTasks}
+            onTaskDeleted={this.deleteTask}
+            onTaskEdited={this.editTask}
+          />
+        </div>
       </div>
     );
   }
